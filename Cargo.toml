@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+  "data-gen",
+  "data-gen-lib"
+]

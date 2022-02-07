@@ -1,0 +1,142 @@
+use crate::interpolator::dataset::DataSet;
+use lazy_static::lazy_static;
+
+lazy_static! {
+    static ref GODS: DataSet = DataSet {
+        tag: "#{ancient.god}",
+        options: vec![
+            "Aphrodite",
+            "Apollo",
+            "Ares",
+            "Artemis",
+            "Athena",
+            "Demeter",
+            "Dionysus",
+            "Hades",
+            "Hephaestus",
+            "Hera",
+            "Hermes",
+            "Hestia",
+            "Poseidon",
+            "Zeus"
+        ]
+    };
+    static ref PRIMORDIAL: DataSet = DataSet {
+        tag: "#{ancient.primordial}",
+        options: vec![
+            "Aion", "Aether", "Ananke", "Chaos", "Chronos", "Erebus", "Eros", "Hypnos", "Nesoi",
+            "Uranus", "Gaia", "Ourea", "Phanes", "Pontus", "Tartarus", "Thalassa", "Thanatos",
+            "Hemera", "Nyx", "Nemesis"
+        ],
+    };
+    static ref TITAN: DataSet = DataSet {
+        tag: "#{ancient.titan}",
+        options: vec![
+            "Coeus",
+            "Crius",
+            "Cronus",
+            "Hyperion",
+            "Iapetus",
+            "Mnemosyne",
+            "Oceanus",
+            "Phoebe",
+            "Rhea",
+            "Tethys",
+            "Theia",
+            "Themis",
+            "Asteria",
+            "Astraeus",
+            "Atlas",
+            "Aura",
+            "Clymene",
+            "Dione",
+            "Helios",
+            "Selene",
+            "Eos",
+            "Epimetheus",
+            "Eurybia",
+            "Eurynome",
+            "Lelantos",
+            "Leto",
+            "Menoetius",
+            "Metis",
+            "Ophion",
+            "Pallas",
+            "Perses",
+            "Prometheus",
+            "Styx"
+        ],
+    };
+    static ref HERO: DataSet = DataSet {
+        tag: "#{ancient.hero}",
+        options: vec![
+            "Abderus",
+            "Achilles",
+            "Aeneas",
+            "Ajax",
+            "Amphitryon",
+            "Antilochus",
+            "Bellerophon",
+            "Castor",
+            "Chrysippus",
+            "Daedalus",
+            "Diomedes",
+            "Eleusis",
+            "Eunostus",
+            "Ganymede",
+            "Hector",
+            "Hercules",
+            "Icarus",
+            "Iolaus",
+            "Jason",
+            "Meleager",
+            "Odysseus",
+            "Orpheus",
+            "Pandion",
+            "Perseus",
+            "Theseus",
+            "Alcestis",
+            "Amymone",
+            "Andromache",
+            "Andromeda",
+            "Antigone",
+            "Arachne",
+            "Ariadne",
+            "Atalanta",
+            "Briseis",
+            "Caeneus",
+            "Cassandra",
+            "Cassiopeia",
+            "Clytemnestra",
+            "Danaë",
+            "Deianeira",
+            "Electra",
+            "Europa",
+            "Hecuba",
+            "Helen",
+            "Hermione",
+            "Iphigenia",
+            "Ismene",
+            "Jocasta",
+            "Medea",
+            "Medusa",
+            "Niobe",
+            "Pandora",
+            "Penelope",
+            "Phaedra",
+            "Polyxena",
+            "Semele",
+            "Thrace"
+        ],
+    };
+}
+
+pub(crate) fn search_ancient(tag: &[&str]) -> Option<&'static DataSet> {
+    match tag {
+        ["god"] => Some(&GODS),
+        ["primordial"] => Some(&PRIMORDIAL),
+        ["titan"] => Some(&TITAN),
+        ["hero"] => Some(&HERO),
+        _ => None,
+    }
+}

@@ -1,0 +1,29 @@
+{
+  "id": {
+    "type": "range",
+    "from": 1,
+    "to": 10
+  },
+  "number": {
+    "type": "phone_number"
+  },
+  "website": {
+    "type": "regex",
+    "pattern": "http[s]{0,1}://www\\.(amazon|twitter)\\.(com|org)"
+  },
+  "favorite_drink": {
+    "type": "one_of",
+    "options": [
+      "coffee",
+      "tea",
+      "milk"
+    ]
+  },
+  "favorite_myth": {
+    "type": "generator",
+    "format": "#{ancient.hero} is my favorite hero!"
+  },
+  "time": {
+    "type": "timestamp"
+  }
+}
