@@ -1,6 +1,6 @@
 pub mod data_type;
 pub mod generator;
-mod interpolator;
+pub mod interpolator;
 mod physical;
 pub mod regex_pattern;
 pub mod schema;
@@ -31,7 +31,9 @@ mod tests {
             .with_field(
                 "generator",
                 Generator {
-                    format: "#{ancient.hero} fights #{ancient.god}".try_into().unwrap(),
+                    format: "#{zelda.games} is my favorite zelda game!"
+                        .try_into()
+                        .unwrap(),
                 },
             )
             .with_field("literal", Literal { value: "hello" })
@@ -65,7 +67,7 @@ mod tests {
         let expected = json!({
             "array": ["a", "a"],
             "boolean": false,
-            "generator": "Abderus fights Aphrodite",
+            "generator": "A Link to the Past is my favorite zelda game!",
             "literal": "hello",
             "range": 1,
             "regex": "000",

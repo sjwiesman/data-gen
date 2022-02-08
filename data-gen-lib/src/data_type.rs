@@ -22,7 +22,7 @@ pub enum DataType<'a> {
     Boolean,
 
     Generator {
-        format: Interpolator,
+        format: Interpolator<'a>,
     },
 
     /// A literal type which always returns

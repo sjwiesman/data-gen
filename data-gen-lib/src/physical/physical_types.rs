@@ -1,4 +1,5 @@
 use crate::data_type::DataType;
+use crate::interpolator::Interpolator;
 use crate::physical::distributions::DynDistribution;
 use crate::regex_pattern::RegexPattern;
 use chrono::Local;
@@ -18,11 +19,14 @@ pub enum PhysicalDataType<'a> {
         size: u32,
     },
     Boolean,
-    Proxy {
-        f: Box<dyn DynDistribution>,
+    Generator {
+        format: Interpolator<'a>,
     },
     OneOf {
         options: Vec<&'a str>,
+    },
+    Proxy {
+        f: Box<dyn DynDistribution>,
     },
     Range {
         r: Range<i32>,
@@ -54,8 +58,8 @@ impl<'a> From<&DataType<'a>> for PhysicalDataType<'a> {
             DataType::Regex { pattern } => PhysicalDataType::Regex {
                 pattern: pattern.clone(),
             },
-            DataType::Generator { format } => PhysicalDataType::Proxy {
-                f: Box::new(format.clone()),
+            DataType::Generator { format } => PhysicalDataType::Generator {
+                format: format.clone(),
             },
             DataType::Object { fields } => PhysicalDataType::Object {
                 fields: fields.iter().map(|(name, dt)| (*name, dt.into())).collect(),
@@ -83,6 +87,7 @@ impl Distribution<Value> for PhysicalDataType<'_> {
                 Value::Array(elements)
             }
             PhysicalDataType::Boolean => Value::Bool(rng.gen()),
+            PhysicalDataType::Generator { format } => Value::String(format.sample(rng)),
             PhysicalDataType::Proxy { f } => f.sample(rng),
             PhysicalDataType::Regex { pattern } => Value::String(pattern.sample(rng)),
             PhysicalDataType::Range { ref r } => {
