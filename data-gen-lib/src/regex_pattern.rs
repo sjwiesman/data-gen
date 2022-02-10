@@ -5,6 +5,7 @@ use regex_syntax;
 use serde::{Deserialize, Serialize, Serializer};
 use std::convert::{TryFrom, TryInto};
 use std::fmt::{Debug, Formatter};
+use thiserror::Error;
 
 /// A valid regular expression that can be sampled for strings
 /// which match the pattern.
@@ -51,7 +52,7 @@ impl<'a> Distribution<String> for RegexPattern<'a> {
 }
 
 impl<'a> TryFrom<&'a str> for RegexPattern<'a> {
-    type Error = String;
+    type Error = Error;
 
     fn try_from(value: &'a str) -> Result<Self, Self::Error> {
         let mut parser = regex_syntax::ParserBuilder::new().unicode(false).build();
@@ -60,7 +61,10 @@ impl<'a> TryFrom<&'a str> for RegexPattern<'a> {
             .parse(value)
             .map_err(rand_regex::Error::Syntax)
             .and_then(move |hir| rand_regex::Regex::with_hir(hir, 100))
-            .map_err(move |err| format!("invalid regular expression: {}", err))?;
+            .map_err(move |err| Error::Invalid {
+                pattern: value.to_string(),
+                source: err,
+            })?;
 
         Ok(RegexPattern {
             regex,
@@ -73,7 +77,7 @@ impl<'a> TryFrom<&'a str> for RegexPattern<'a> {
 struct IntermediateRegexPattern<'a>(&'a str);
 
 impl<'a> TryFrom<IntermediateRegexPattern<'a>> for RegexPattern<'a> {
-    type Error = String;
+    type Error = Error;
 
     fn try_from(value: IntermediateRegexPattern<'a>) -> Result<Self, Self::Error> {
         value.0.try_into()
@@ -87,4 +91,13 @@ impl<'a> Serialize for RegexPattern<'a> {
     {
         serializer.serialize_str(self.format)
     }
+}
+
+#[derive(Error, Debug)]
+pub enum Error {
+    #[error("invalid regular expression: {pattern}")]
+    Invalid {
+        pattern: String,
+        source: rand_regex::Error,
+    },
 }

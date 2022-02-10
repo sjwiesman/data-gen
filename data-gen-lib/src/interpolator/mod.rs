@@ -13,6 +13,8 @@ use nom::IResult;
 
 use serde::{Deserialize, Serialize};
 
+use thiserror::Error;
+
 #[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
 pub struct Interpolator<'a> {
     line: &'a str,
@@ -34,12 +36,24 @@ impl<'a> TryFrom<&'a str> for Interpolator<'a> {
     }
 }
 
+#[derive(Error, Debug)]
+pub enum Error {
+    #[error("interpolation format {format} expanded infinitely")]
+    InfiniteExpansion { format: String },
+
+    #[error("unknown interpolation format specifier {tag}")]
+    UnknownFormatSpecifier { tag: String },
+
+    #[error("interpolation format specifier {tag} has no valid options")]
+    EmptyDataSet { tag: String },
+}
+
 impl<'a> Interpolator<'a> {
     const OPEN_TAG: &'static str = "#{";
 
     const CLOSE_TAG: &'static str = "}";
 
-    fn interpolate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<String, String> {
+    fn interpolate<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<String, Error> {
         let mut buffer = String::new();
         let mut stack = Vec::new();
 
@@ -54,7 +68,9 @@ impl<'a> Interpolator<'a> {
 
         while let Some(pointer) = stack.pop() {
             if stack.len() == 100 {
-                return Err(format!("interpolator {} expands infinitely", self.line));
+                return Err(Error::InfiniteExpansion {
+                    format: self.line.to_string(),
+                });
             }
 
             match Interpolator::until_next_tag(pointer) {
@@ -81,13 +97,17 @@ impl<'a> Interpolator<'a> {
         Ok(buffer)
     }
 
-    fn expand<R: Rng + ?Sized>(specifier: &str, rng: &mut R) -> Result<&'static str, String> {
+    fn expand<R: Rng + ?Sized>(specifier: &str, rng: &mut R) -> Result<&'static str, Error> {
         FULL_DATA_SET
             .get(specifier)
-            .ok_or_else(|| format!("no dataset found for specifier {}", specifier))
+            .ok_or_else(move || Error::UnknownFormatSpecifier {
+                tag: specifier.to_string(),
+            })
             .map(|options| options.choose(rng).copied())
             .and_then(|result| {
-                result.ok_or_else(|| format!("no options for specifier {}", specifier))
+                result.ok_or_else(|| Error::EmptyDataSet {
+                    tag: specifier.to_string(),
+                })
             })
     }
 
