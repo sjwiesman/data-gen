@@ -71,7 +71,7 @@ pub enum DataType<'a> {
     /// };
     /// ```
     Regex {
-        pattern: RegexPattern,
+        pattern: RegexPattern<'a>,
     },
 
     /// A timestamp formatted string. Unlike other

@@ -32,7 +32,7 @@ pub enum PhysicalDataType<'a> {
         r: Range<i32>,
     },
     Regex {
-        pattern: RegexPattern,
+        pattern: RegexPattern<'a>,
     },
     Object {
         fields: HashMap<&'a str, PhysicalDataType<'a>>,

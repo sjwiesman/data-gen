@@ -3,7 +3,7 @@ mod dataset;
 use nom::bytes::complete::{is_not, tag, take_until};
 use nom::combinator::recognize;
 use rand::distributions::Distribution;
-use rand::prelude::*;
+use rand::seq::SliceRandom;
 use rand::Rng;
 
 use crate::interpolator::dataset::FULL_DATA_SET;

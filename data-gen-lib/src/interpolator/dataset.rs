@@ -49,6 +49,14 @@ fn dataset_name(path: &Path) -> std::io::Result<&str> {
 }
 
 fn read<'b>(file: &'b File) -> std::io::Result<HashMap<&'b str, Vec<&'b str>>> {
-    serde_json::from_slice(file.contents())
-        .map_err(|e| std::io::Error::new(ErrorKind::Other, format!("failed to read file {}: {}", file.path().to_str().unwrap(), e)))
+    serde_json::from_slice(file.contents()).map_err(|e| {
+        std::io::Error::new(
+            ErrorKind::Other,
+            format!(
+                "failed to read file {}: {}",
+                file.path().to_str().unwrap(),
+                e
+            ),
+        )
+    })
 }
