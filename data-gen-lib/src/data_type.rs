@@ -22,7 +22,7 @@ pub enum DataType<'a> {
     Boolean,
 
     Generator {
-        format: Interpolator<'a>,
+        format: Interpolator,
     },
 
     /// A literal type which always returns
@@ -67,11 +67,11 @@ pub enum DataType<'a> {
     /// # use std::convert::{TryFrom, TryInto};
     ///
     /// let _ = Regex {
-    ///     pattern: r"www\.[a-z]{3,10}\.(com|org|io)".try_into().unwrap()
+    ///     pattern: r"www\.[a-z]{3,10}\.(com|org|io)".to_string().try_into().unwrap()
     /// };
     /// ```
     Regex {
-        pattern: RegexPattern<'a>,
+        pattern: RegexPattern,
     },
 
     /// A timestamp formatted string. Unlike other

@@ -16,15 +16,13 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 #[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
-pub struct Interpolator<'a> {
-    line: &'a str,
-}
+pub struct Interpolator(String);
 
-impl<'a> TryFrom<&'a str> for Interpolator<'a> {
+impl<'a> TryFrom<&'a str> for Interpolator {
     type Error = String;
 
     fn try_from(value: &'a str) -> Result<Self, Self::Error> {
-        let interpolator = Interpolator { line: value };
+        let interpolator = Interpolator(value.to_owned());
 
         // because tags expand recursively, the only way to
         // verify a string is to run a test expansion.
@@ -48,7 +46,7 @@ pub enum Error {
     EmptyDataSet { tag: String },
 }
 
-impl<'a> Interpolator<'a> {
+impl Interpolator {
     const OPEN_TAG: &'static str = "#{";
 
     const CLOSE_TAG: &'static str = "}";
@@ -57,7 +55,7 @@ impl<'a> Interpolator<'a> {
         let mut buffer = String::new();
         let mut stack = Vec::new();
 
-        match Interpolator::until_next_tag(self.line) {
+        match Interpolator::until_next_tag(&self.0) {
             (prefix, Some(remaining)) => {
                 buffer.push_str(prefix);
                 stack.push(remaining);
@@ -69,7 +67,7 @@ impl<'a> Interpolator<'a> {
         while let Some(pointer) = stack.pop() {
             if stack.len() == 100 {
                 return Err(Error::InfiniteExpansion {
-                    format: self.line.to_string(),
+                    format: self.0.to_string(),
                 });
             }
 
@@ -133,7 +131,7 @@ impl<'a> Interpolator<'a> {
     }
 }
 
-impl<'a> Distribution<String> for Interpolator<'a> {
+impl Distribution<String> for Interpolator {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> String {
         let result = self.interpolate(rng);
         result.unwrap()

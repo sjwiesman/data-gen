@@ -41,7 +41,7 @@ mod tests {
             .with_field(
                 "regex",
                 Regex {
-                    pattern: r"\d{3}".try_into().unwrap(),
+                    pattern: r"\d{3}".to_owned().try_into().unwrap(),
                 },
             )
             .with_field(

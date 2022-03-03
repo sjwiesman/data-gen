@@ -20,7 +20,7 @@ pub enum PhysicalDataType<'a> {
     },
     Boolean,
     Generator {
-        format: Interpolator<'a>,
+        format: Interpolator,
     },
     OneOf {
         options: Vec<&'a str>,
@@ -32,7 +32,7 @@ pub enum PhysicalDataType<'a> {
         r: Range<i32>,
     },
     Regex {
-        pattern: RegexPattern<'a>,
+        pattern: RegexPattern,
     },
     Object {
         fields: HashMap<&'a str, PhysicalDataType<'a>>,
@@ -52,7 +52,7 @@ impl<'a> From<&DataType<'a>> for PhysicalDataType<'a> {
                 options: options.clone(),
             },
             DataType::PhoneNumber => PhysicalDataType::Regex {
-                pattern: r"\d{3}-\d{3}-\d{4}".try_into().unwrap(),
+                pattern: r"\d{3}-\d{3}-\d{4}".to_owned().try_into().unwrap(),
             },
             DataType::Range { from, to } => PhysicalDataType::Range { r: *from..*to },
             DataType::Regex { pattern } => PhysicalDataType::Regex {
