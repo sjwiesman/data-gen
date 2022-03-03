@@ -14,7 +14,7 @@ mod tests {
     use crate::schema::Schema;
     use rand::prelude::*;
     use rand::rngs::mock::StepRng;
-    use serde_json::{json, Value};
+    use serde_json::json;
 
     #[test]
     fn it_generates() {
@@ -59,7 +59,7 @@ mod tests {
                 },
             );
 
-        let gen: DataGenerator<Value> = unsafe { DataGenerator::new(&schema) };
+        let gen = DataGenerator::new(&schema);
 
         let mut rng = StepRng::new(2, 1);
         let value = rng.sample(gen);

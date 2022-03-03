@@ -35,7 +35,7 @@ fn main() -> Result<()> {
     let schema: Schema = serde_json::from_str(data)
         .with_context(move || format!("failed to deserialize JSON schema\n{}", data.clone()))?;
 
-    let gen = DataGenerator::json(&schema);
+    let gen = DataGenerator::new(&schema);
 
     let print = |v| {
         if args.pretty {
