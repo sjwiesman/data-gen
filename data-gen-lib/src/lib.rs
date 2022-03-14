@@ -65,7 +65,7 @@ mod tests {
         let value = rng.sample(gen);
 
         let expected = json!({
-            "array": ["a", "a"],
+            "array": ["a"],
             "boolean": false,
             "generator": "A Link to the Past is my favorite zelda game!",
             "literal": "hello",
