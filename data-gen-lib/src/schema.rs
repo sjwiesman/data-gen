@@ -31,7 +31,9 @@ impl<'a> Schema<'a> {
     /// }
     /// ```
     pub fn iter(&'a self) -> impl Iterator<Item = (&'a str, &'a DataType<'a>)> {
-        self.fields.iter().map(|(name, tpe)| (*name, tpe))
+        let mut v = Vec::from_iter(self.fields.iter());
+        v.sort_by(|(left, _), (right, _)| left.cmp(right));
+        v.into_iter().map(|(name, tpe)| (*name, tpe))
     }
 
     /// Adds a new field to the [Schema]. If a field

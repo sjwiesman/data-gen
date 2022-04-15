@@ -18,6 +18,12 @@ pub enum DataType<'a> {
         size: u32,
     },
 
+    /// A 2 byte, small-range integer from -32768 to +32767.
+    SmallInt,
+
+    /// A 4 byte integer from -2147483648 to +2147483647.
+    Integer,
+
     /// A simple boolean.
     Boolean,
 
@@ -49,8 +55,8 @@ pub enum DataType<'a> {
 
     /// A random number from a given range.
     Range {
-        from: i32,
-        to: i32,
+        from: i64,
+        to: i64,
     },
 
     /// A random value that matches the specified
@@ -67,12 +73,15 @@ pub enum DataType<'a> {
     /// # use std::convert::{TryFrom, TryInto};
     ///
     /// let _ = Regex {
-    ///     pattern: r"www\.[a-z]{3,10}\.(com|org|io)".try_into().unwrap()
+    ///     pattern: r"www\.[a-z]{3,10}\.(com|org|io)".to_string().try_into().unwrap()
     /// };
     /// ```
     Regex {
         pattern: RegexPattern,
     },
+
+    /// A monotonically increasing value from 1 to 2147483647
+    Serial,
 
     /// A timestamp formatted string. Unlike other
     /// data types, timestamps always return the

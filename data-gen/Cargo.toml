@@ -6,7 +6,9 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0"
 clap = { version = "3.0", features = ["derive"] }
-data-gen-lib = { path = "../data-gen-lib", features = ["json"] }
+csv = "1.1"
+data-gen-lib = { path = "../data-gen-lib" }
 rand = "0.8"
 serde = "1.0"
 serde_json = "1.0"
+dynfmt = "0.1.5"

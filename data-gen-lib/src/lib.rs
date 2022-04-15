@@ -1,6 +1,6 @@
 pub mod data_type;
 pub mod generator;
-mod interpolator;
+pub mod interpolator;
 mod physical;
 pub mod regex_pattern;
 pub mod schema;
@@ -14,7 +14,7 @@ mod tests {
     use crate::schema::Schema;
     use rand::prelude::*;
     use rand::rngs::mock::StepRng;
-    use serde_json::{json, Value};
+    use serde_json::json;
 
     #[test]
     fn it_generates() {
@@ -31,7 +31,9 @@ mod tests {
             .with_field(
                 "generator",
                 Generator {
-                    format: "#{ancient.hero} fights #{ancient.god}".try_into().unwrap(),
+                    format: "#{zelda.games} is my favorite zelda game!"
+                        .try_into()
+                        .unwrap(),
                 },
             )
             .with_field("literal", Literal { value: "hello" })
@@ -39,7 +41,7 @@ mod tests {
             .with_field(
                 "regex",
                 Regex {
-                    pattern: r"\d{3}".try_into().unwrap(),
+                    pattern: r"\d{3}".to_owned().try_into().unwrap(),
                 },
             )
             .with_field(
@@ -57,15 +59,15 @@ mod tests {
                 },
             );
 
-        let gen: DataGenerator<Value> = unsafe { DataGenerator::new(&schema) };
+        let gen = DataGenerator::new(&schema);
 
         let mut rng = StepRng::new(2, 1);
         let value = rng.sample(gen);
 
         let expected = json!({
-            "array": ["a", "a"],
+            "array": ["a"],
             "boolean": false,
-            "generator": "Abderus fights Aphrodite",
+            "generator": "A Link to the Past is my favorite zelda game!",
             "literal": "hello",
             "range": 1,
             "regex": "000",
